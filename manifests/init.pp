@@ -26,9 +26,80 @@ class nagios {
 	ensure  => present,
         owner   => "root",
         group   => "root",
-        mode    => 0600,
+        mode    => 0644,
         source  => "puppet:///modules/nagios/services_nagios2.cfg",
 	require => Package["nagios3"],
     }
+  
+  file { "/etc/nagios3/conf.d/localhost_nagios2.cfg":
+        notify  => Service["nagios3"],
+        ensure  => present,
+        owner   => "root",
+        group   => "root",
+        mode    => 0644,
+        source  => "puppet:///modules/nagios/localhost_nagios2.cfg",
+        require => Package["nagios3"],
+    }
+
+file { "/etc/nagios3/conf.d/contacts_nagios2.cfg":
+        notify  => Service["nagios3"],
+        ensure  => present,
+        owner   => "root",
+        group   => "root",
+        mode    => 0644,
+        source  => "puppet:///modules/nagios/contacts_nagios2.cfg",
+        require => Package["nagios3"],
+    }
+
+file { "/etc/nagios3/conf.d/extinfo_nagios2.cfg":
+        notify  => Service["nagios3"],
+        ensure  => present,
+        owner   => "root",
+        group   => "root",
+        mode    => 0644,
+        source  => "puppet:///modules/nagios/extinfo_nagios2.cfg",
+        require => Package["nagios3"],
+    }
+
+file { "/etc/nagios3/conf.d/generic-host_nagios2.cfg":
+        notify  => Service["nagios3"],
+        ensure  => present,
+        owner   => "root",
+        group   => "root",
+        mode    => 0644,
+        source  => "puppet:///modules/nagios/generic-host_nagios2.cfg",
+        require => Package["nagios3"],
+    }
+
+file { "/etc/nagios3/conf.d/generic-service_nagios2.cfg":
+        notify  => Service["nagios3"],
+        ensure  => present,
+        owner   => "root",
+        group   => "root",
+        mode    => 0644,
+        source  => "puppet:///modules/nagios/generic-service_nagios2.cfg",
+        require => Package["nagios3"],
+    }
+
+file { "/etc/nagios3/conf.d/hostgroups_nagios2.cfg":
+        notify  => Service["nagios3"],
+        ensure  => present,
+        owner   => "root",
+        group   => "root",
+        mode    => 0644,
+        source  => "puppet:///modules/nagios/hostgroups_nagios2.cfg",
+        require => Package["nagios3"],
+    } 
+
+file { "/etc/nagios3/conf.d/timeperiods_nagios2.cfg":
+        notify  => Service["nagios3"],
+        ensure  => present,
+        owner   => "root",
+        group   => "root",
+        mode    => 0644,
+        source  => "puppet:///modules/nagios/timeperiods_nagios2.cfg",
+        require => Package["nagios3"],
+    }
+
 }
 
