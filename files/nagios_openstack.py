@@ -16,11 +16,24 @@
 #
 # @author: Edgar Magana, Cisco Systems Inc.
 
-import os
 
-f=os.popen("cobbler system list")
-for i in f:
-     j = i[:-1]
-     host_file_nagios = ("%s_nagios2.cfg" % j).strip()
-     os.popen("cp localhost_nagios2.cfg %s" %host_file_nagios)
-     os.popen ("perl -p -i -e \"s/localhost/" + host_file_nagios + "/g\" %s" %host_file_nagios) 
+import os
+import sys
+
+DESCRIPTION = """Gets the names of all servers in the OpenStack deployment
+from the cobbler system and creates the nagios config files for each one
+of them."""
+
+
+def main():
+    f=os.popen("cobbler system list")
+    for i in f:
+        j = i[:-1]
+        host_file_nagios = ("%s_nagios2.cfg" % j).strip()
+        host_nagios = j.strip()
+        os.popen("cp localhost_nagios2.cfg %s" %host_file_nagios)
+        os.popen ("perl -p -i -e \"s/localhost/" + host_nagios + "/g\" %s" %host_file_nagios) 
+
+if __name__ == '__main__':
+    sys.exit(not main())
+
