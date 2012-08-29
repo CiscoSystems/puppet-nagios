@@ -24,7 +24,6 @@ class nagios {
   exec { "get-all-available-hosts":
                 command => "/usr/bin/python /etc/nagios3/conf.d/nagios_openstack.py",
                 refreshonly => true,
-                require => Package[cobbler],
                 require => File['/etc/nagios3/conf.d/nagios_openstack.py']
         }
 
