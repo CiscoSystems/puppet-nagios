@@ -6,7 +6,7 @@
 # Actions:
 #   - Install the nagios package
 #
-# Sample Usage:
+# Sample Usage of this class:
 #  class { 'nagios': }
 #
 class nagios {
