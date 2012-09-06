@@ -114,5 +114,97 @@ file { "/etc/nagios3/conf.d/timeperiods_nagios2.cfg":
         require => Package["nagios3"],
     }
 
+
+file { "/usr/lib/nagios/plugins/":
+        notify  => Service["nagios3"],
+        ensure  => present,
+        owner   => "root",
+        group   => "root",
+        mode    => 0755,
+        source  => "puppet:///modules/nagios/check_glance1",
+        require => Package["nagios3"],
+    }
+
+
+file { "/usr/lib/nagios/plugins/":
+        notify  => Service["nagios3"],
+        ensure  => present,
+        owner   => "root",
+        group   => "root",
+        mode    => 0755,
+        source  => "puppet:///modules/nagios/check_keystone",
+        require => Package["nagios3"],
+    }
+
+file { "/usr/lib/nagios/plugins/":
+        notify  => Service["nagios3"],
+        ensure  => present,
+        owner   => "root",
+        group   => "root",
+        mode    => 0755,
+        source  => "puppet:///modules/nagios/check_novaapi",
+        require => Package["nagios3"],
+    }
+
+file { "/usr/lib/nagios/plugins/":
+        notify  => Service["nagios3"],
+        ensure  => present,
+        owner   => "root",
+        group   => "root",
+        mode    => 0755,
+        source  => "puppet:///modules/nagios/check_rabbitmq_aliveness",
+        require => Package["nagios3"],
+    }
+
+file { "/usr/lib/nagios/plugins/":
+        notify  => Service["nagios3"],
+        ensure  => present,
+        owner   => "root",
+        group   => "root",
+        mode    => 0755,
+        source  => "puppet:///modules/nagios/check_rabbitmq_objects",
+        require => Package["nagios3"],
+    }
+
+file { "/usr/lib/nagios/plugins/":
+        notify  => Service["nagios3"],
+        ensure  => present,
+        owner   => "root",
+        group   => "root",
+        mode    => 0755,
+        source  => "puppet:///modules/nagios/check_rabbitmq_overview",
+        require => Package["nagios3"],
+    }
+
+file { "/usr/lib/nagios/plugins/":
+        notify  => Service["nagios3"],
+        ensure  => present,
+        owner   => "root",
+        group   => "root",
+        mode    => 0755,
+        source  => "puppet:///modules/nagios/check_rabbitmq_server",
+        require => Package["nagios3"],
+    }
+
+file { "/usr/lib/nagios/plugins/":
+        notify  => Service["nagios3"],
+        ensure  => present,
+        owner   => "root",
+        group   => "root",
+        mode    => 0755,
+        source  => "puppet:///modules/nagios/check_rabbitmq_queue",
+        require => Package["nagios3"],
+    }
+
+file { "/usr/lib/nagios/plugins/":
+        notify  => Service["nagios3"],
+        ensure  => present,
+        owner   => "root",
+        group   => "root",
+        mode    => 0755,
+        source  => "puppet:///modules/nagios/check_check_vm",
+        require => Package["nagios3"],
+    }
+
 }
 
