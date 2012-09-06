@@ -26,7 +26,12 @@ class nagios {
                 refreshonly => true,
                 require => File['/etc/nagios3/conf.d/nagios_openstack.py']
         }
-
+  
+  file { "/etc/nagios3/conf.d/localhost_nagios2.cfg":
+        notify  => Service["nagios3"],
+        ensure => absent,
+  }
+ 
   file { "/etc/nagios3/conf.d/nagios_openstack.py":
         notify  => Service["nagios3"],
         ensure  => present,
@@ -48,15 +53,6 @@ class nagios {
 	require => Package["nagios3"],
     }
   
-  file { "/etc/nagios3/conf.d/localhost_nagios2.cfg":
-        notify  => Service["nagios3"],
-        ensure  => present,
-        owner   => "root",
-        group   => "root",
-        mode    => 0644,
-        source  => "puppet:///modules/nagios/localhost_nagios2.cfg",
-        require => Package["nagios3"],
-    }
 
 file { "/etc/nagios3/conf.d/contacts_nagios2.cfg":
         notify  => Service["nagios3"],
