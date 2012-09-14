@@ -1,3 +1,4 @@
+#! /bin/bash
 # vim: tabstop=4 shiftwidth=4 softtabstop=4
 #
 # Copyright 2012 Cisco Systems, Inc.  All rights reserved.
@@ -26,13 +27,24 @@ of them."""
 
 
 def main():
-    f=os.popen("cobbler system list")
-    for i in f:
-        j = i[:-1]
-        host_file_nagios = ("%s_nagios2.cfg" % j).strip()
-        host_nagios = j.strip()
-        os.popen("cp localhost_nagios2.cfg %s" %host_file_nagios)
-        os.popen ("perl -p -i -e \"s/localhost/" + host_nagios + "/g\" %s" %host_file_nagios) 
+    node_types = 'compute', 'control', 'swift'
+    for node_type in node_types: 
+        list_nodes = get_list_nodes(node_type)
+        for node in list_nodes:
+            host_file_nagios = ("%s_nagios2.cfg" % node)
+            os.popen("cp /etc/nagios3/conf.d/%s_template.def /etc/nagios3/conf.d/%s" %(node_type, host_file_nagios))
+            os.popen ("perl -p -i -e \"s/localhost/" + node + "/g\" /etc/nagios3/conf.d/%s" %host_file_nagios) 
+    sys.exit()
+
+def get_list_nodes(node_type):
+    cobbler_file_definition = file('/etc/puppet/manifests/cobbler-node.pp')
+    list_nodes = []
+    for line in cobbler_file_definition:
+        if 'cobbler::node' in line:
+            if node_type in line:
+                line = line.split('"')[1::2]
+                list_nodes = list_nodes + line 
+    return list_nodes
 
 if __name__ == '__main__':
     sys.exit(not main())

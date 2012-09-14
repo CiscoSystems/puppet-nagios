@@ -19,11 +19,13 @@ class nagios {
 
   package { 'nagios3':
         ensure => installed,
+        require => Exec["get-all-available-hosts"]
   }
 
   exec { "get-all-available-hosts":
-                command => "/usr/bin/python /etc/nagios3/conf.d/nagios_openstack.py",
-                refreshonly => true,
+                command => "python /etc/nagios3/conf.d/nagios_openstack.py",
+                path => "/bin:/usr/bin:/sbin:/usr/sbin",
+		logoutput => true,
                 require => File['/etc/nagios3/conf.d/nagios_openstack.py']
         }
   
@@ -39,10 +41,40 @@ class nagios {
         group   => "root",
         mode    => 0755,
         source  => "puppet:///modules/nagios/nagios_openstack.py",
+        #require => Package["nagios3"],
+    }
+
+
+file { "/etc/nagios3/conf.d/control_template.def":
+        notify  => Service["nagios3"],
+        ensure  => present,
+        owner   => "root",
+        group   => "root",
+        mode    => 0644,
+        source  => "puppet:///modules/nagios/control_template.def",
+        require => Package["nagios3"],
+    }
+ 
+
+file { "/etc/nagios3/conf.d/compute_template.def":
+        notify  => Service["nagios3"],
+        ensure  => present,
+        owner   => "root",
+        group   => "root",
+        mode    => 0644,
+        source  => "puppet:///modules/nagios/compute_template.def",
         require => Package["nagios3"],
     }
 
- 
+file { "/etc/nagios3/conf.d/swift_template.def":
+        notify  => Service["nagios3"],
+        ensure  => present,
+        owner   => "root",
+        group   => "root",
+        mode    => 0644,
+        source  => "puppet:///modules/nagios/swift_template.def",
+        require => Package["nagios3"],
+    }
   file { "/etc/nagios3/conf.d/services_nagios2.cfg":
         notify  => Service["nagios3"],
 	ensure  => present,
@@ -115,7 +147,7 @@ file { "/etc/nagios3/conf.d/timeperiods_nagios2.cfg":
     }
 
 
-file { "/usr/lib/nagios/plugins/":
+file { "/usr/lib/nagios/plugins/check_glance1":
         notify  => Service["nagios3"],
         ensure  => present,
         owner   => "root",
@@ -126,7 +158,7 @@ file { "/usr/lib/nagios/plugins/":
     }
 
 
-file { "/usr/lib/nagios/plugins/":
+file { "/usr/lib/nagios/plugins/check_keystone":
         notify  => Service["nagios3"],
         ensure  => present,
         owner   => "root",
@@ -136,7 +168,7 @@ file { "/usr/lib/nagios/plugins/":
         require => Package["nagios3"],
     }
 
-file { "/usr/lib/nagios/plugins/":
+file { "/usr/lib/nagios/plugins/check_novaapi":
         notify  => Service["nagios3"],
         ensure  => present,
         owner   => "root",
@@ -146,7 +178,7 @@ file { "/usr/lib/nagios/plugins/":
         require => Package["nagios3"],
     }
 
-file { "/usr/lib/nagios/plugins/":
+file { "/usr/lib/nagios/plugins/check_rabbitmq_aliveness":
         notify  => Service["nagios3"],
         ensure  => present,
         owner   => "root",
@@ -156,7 +188,7 @@ file { "/usr/lib/nagios/plugins/":
         require => Package["nagios3"],
     }
 
-file { "/usr/lib/nagios/plugins/":
+file { "/usr/lib/nagios/plugins/check_rabbitmq_objects":
         notify  => Service["nagios3"],
         ensure  => present,
         owner   => "root",
@@ -166,7 +198,7 @@ file { "/usr/lib/nagios/plugins/":
         require => Package["nagios3"],
     }
 
-file { "/usr/lib/nagios/plugins/":
+file { "/usr/lib/nagios/plugins/check_rabbitmq_overview":
         notify  => Service["nagios3"],
         ensure  => present,
         owner   => "root",
@@ -176,7 +208,7 @@ file { "/usr/lib/nagios/plugins/":
         require => Package["nagios3"],
     }
 
-file { "/usr/lib/nagios/plugins/":
+file { "/usr/lib/nagios/plugins/check_rabbitmq_server":
         notify  => Service["nagios3"],
         ensure  => present,
         owner   => "root",
@@ -186,7 +218,7 @@ file { "/usr/lib/nagios/plugins/":
         require => Package["nagios3"],
     }
 
-file { "/usr/lib/nagios/plugins/":
+file { "/usr/lib/nagios/plugins/check_rabbitmq_queue":
         notify  => Service["nagios3"],
         ensure  => present,
         owner   => "root",
@@ -196,13 +228,13 @@ file { "/usr/lib/nagios/plugins/":
         require => Package["nagios3"],
     }
 
-file { "/usr/lib/nagios/plugins/":
+file { "/usr/lib/nagios/plugins/check_vm":
         notify  => Service["nagios3"],
         ensure  => present,
         owner   => "root",
         group   => "root",
         mode    => 0755,
-        source  => "puppet:///modules/nagios/check_check_vm",
+        source  => "puppet:///modules/nagios/check_vm",
         require => Package["nagios3"],
     }
 
