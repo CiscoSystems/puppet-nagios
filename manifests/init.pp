@@ -19,13 +19,14 @@ class nagios {
 
   package { 'nagios3':
         ensure => installed,
-        require => Exec["get-all-available-hosts"]
+        #require => Exec["get-all-available-hosts"]
   }
 
   exec { "get-all-available-hosts":
                 command => "python /etc/nagios3/conf.d/nagios_openstack.py",
                 path => "/bin:/usr/bin:/sbin:/usr/sbin",
 		logoutput => true,
+                notify  => Service["nagios3"],
                 require => File['/etc/nagios3/conf.d/nagios_openstack.py']
         }
   
@@ -41,7 +42,40 @@ class nagios {
         group   => "root",
         mode    => 0755,
         source  => "puppet:///modules/nagios/nagios_openstack.py",
-        #require => Package["nagios3"],
+        require => Package["nagios3"],
+    }
+
+
+   file { "/etc/nagios3/htpasswd.users":
+        notify  => Service["nagios3"],
+        ensure  => present,
+        owner   => "root",
+        group   => "root",
+        mode    => 0600,
+        source  => "puppet:///modules/nagios/htpasswd.users",
+        require => Package["nagios3"],
+    }
+
+
+    file { "/etc/nagios3/cgi.cfg":
+        notify  => Service["nagios3"],
+        ensure  => present,
+        owner   => "root",
+        group   => "root",
+        mode    => 0644,
+        source  => "puppet:///modules/nagios/cgi.cfg",
+        require => Package["nagios3"],
+    }
+
+    
+     file { "/etc/nagios3/apache2.conf":
+        notify  => Service["nagios3"],
+        ensure  => present,
+        owner   => "root",
+        group   => "root",
+        mode    => 0644,
+        source  => "puppet:///modules/nagios/apache2.conf",
+        require => Package["nagios3"],
     }
 
 
