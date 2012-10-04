@@ -51,7 +51,7 @@ class nagios {
         ensure  => present,
         owner   => "root",
         group   => "root",
-        mode    => 0600,
+        mode    => 0644,
         source  => "puppet:///modules/nagios/htpasswd.users",
         require => Package["nagios3"],
     }
