@@ -27,23 +27,24 @@ of them."""
 
 
 def main():
-    node_types = 'compute', 'control', 'swift'
-    for node_type in node_types: 
-        list_nodes = get_list_nodes(node_type)
-        for node in list_nodes:
-            host_file_nagios = ("%s_nagios2.cfg" % node)
-            os.popen("cp /etc/nagios3/conf.d/%s_template.def /etc/nagios3/conf.d/%s" %(node_type, host_file_nagios))
-            os.popen ("perl -p -i -e \"s/localhost/" + node + "/g\" /etc/nagios3/conf.d/%s" %host_file_nagios) 
-    sys.exit()
+        list_nodes = get_list_nodes()
+        for node_type, host_node in list_nodes.items():
+            host_file_nagios = ("%s_nagios2.cfg" % host_node)
+	    os.popen("cp /etc/nagios3/conf.d/%s_template.def /etc/nagios3/conf.d/%s" %(node_type, host_file_nagios))
+            os.popen("perl -p -i -e \"s/localhost/" + host_node + "/g\" /etc/nagios3/conf.d/%s" %host_file_nagios) 
+        sys.exit()
 
-def get_list_nodes(node_type):
+def get_list_nodes():
     cobbler_file_definition = file('/etc/puppet/manifests/cobbler-node.pp')
-    list_nodes = []
+    list_nodes = {}
     for line in cobbler_file_definition:
         if 'cobbler::node' in line:
-            if node_type in line:
-                line = line.split('"')[1::2]
-                list_nodes = list_nodes + line 
+            host_name = ', '.join(line.split('"')[1::2])
+	    for line in cobbler_file_definition:
+	        if 'node_type' in line:
+		    node_type = ', '.join(line.split('"')[1::2])
+		    list_nodes['%s' %node_type] = host_name
+		    break
     return list_nodes
 
 if __name__ == '__main__':
