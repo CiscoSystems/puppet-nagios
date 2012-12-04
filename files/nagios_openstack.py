@@ -35,7 +35,7 @@ def main():
         sys.exit()
 
 def get_list_nodes():
-    cobbler_file_definition = file('/etc/puppet/manifests/cobbler-node.pp')
+    cobbler_file_definition = file('/etc/puppet/manifests/site.pp')
     list_nodes = {}
     for line in cobbler_file_definition:
         if 'cobbler::node' in line:
