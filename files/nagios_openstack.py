@@ -28,23 +28,27 @@ of them."""
 
 def main():
         list_nodes = get_list_nodes()
-        for node_type, host_node in list_nodes.items():
-            host_file_nagios = ("%s_nagios2.cfg" % host_node)
-	    os.popen("cp /etc/nagios3/conf.d/%s_template.def /etc/nagios3/conf.d/%s" %(node_type, host_file_nagios))
-            os.popen("perl -p -i -e \"s/localhost/" + host_node + "/g\" /etc/nagios3/conf.d/%s" %host_file_nagios) 
+        for node_type, host_list in list_nodes:
+            hosts = host_list.split(',')
+            for host_node in hosts:
+                host_file_nagios = ("%s_nagios2.cfg" % host_node)
+	        os.popen("cp /etc/nagios3/conf.d/%s_template.def /etc/nagios3/conf.d/%s" %(node_type, host_file_nagios))
+                os.popen("perl -p -i -e \"s/localhost/" + host_node + "/g\" /etc/nagios3/conf.d/%s" %host_file_nagios) 
         sys.exit()
 
 def get_list_nodes():
     cobbler_file_definition = file('/etc/puppet/manifests/site.pp')
     list_nodes = {}
     for line in cobbler_file_definition:
-        if 'cobbler::node' in line:
-            host_name = ', '.join(line.split('"')[1::2])
-	    for line in cobbler_file_definition:
-	        if 'node_type' in line:
-		    node_type = ', '.join(line.split('"')[1::2])
-		    list_nodes['%s' %node_type] = host_name
-		    break
+        if 'cobbler_node {' in line:
+            host_details = line.split(',')[0]
+            host_name_details = host_details.split(':')
+            host_name = host_name_details[0].split('"')[1]
+            node_type = host_name_details[1].split('"')[1]
+            if node_type in list_nodes:
+                list_nodes['%s' %node_type] = ', '.join([list_nodes['%s' %node_type], host_name])
+            else:
+                list_nodes['%s' %node_type] = host_name
     return list_nodes
 
 if __name__ == '__main__':
