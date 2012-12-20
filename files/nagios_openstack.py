@@ -28,7 +28,7 @@ of them."""
 
 def main():
         list_nodes = get_list_nodes()
-        for node_type, host_list in list_nodes:
+        for node_type, host_list in list_nodes.items():
             hosts = host_list.split(',')
             for host_node in hosts:
                 host_file_nagios = ("%s_nagios2.cfg" % host_node)
