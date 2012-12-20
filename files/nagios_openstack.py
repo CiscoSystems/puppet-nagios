@@ -31,7 +31,7 @@ def main():
         for node_type, host_list in list_nodes.items():
             hosts = host_list.split(',')
             for host_node in hosts:
-                host_file_nagios = ("%s_nagios2.cfg" % host_node)
+                host_file_nagios = ("%s_nagios2.cfg" % host_node.strip())
 	        os.popen("cp /etc/nagios3/conf.d/%s_template.def /etc/nagios3/conf.d/%s" %(node_type, host_file_nagios))
                 os.popen("perl -p -i -e \"s/localhost/" + host_node + "/g\" /etc/nagios3/conf.d/%s" %host_file_nagios) 
         sys.exit()
