@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/usr/bin/python
 # vim: tabstop=4 shiftwidth=4 softtabstop=4
 #
 # Copyright 2012 Cisco Systems, Inc.  All rights reserved.
@@ -26,27 +26,13 @@ from the cobbler system and creates the nagios config files for each one
 of them."""
 
 
-def main():
-        list_nodes = get_list_nodes()
-        for node_type, host_node in list_nodes.items():
-            host_file_nagios = ("%s_nagios2.cfg" % host_node)
-	    os.popen("cp /etc/nagios3/conf.d/%s_template.def /etc/nagios3/conf.d/%s" %(node_type, host_file_nagios))
-            os.popen("perl -p -i -e \"s/localhost/" + host_node + "/g\" /etc/nagios3/conf.d/%s" %host_file_nagios) 
-        sys.exit()
-
-def get_list_nodes():
-    cobbler_file_definition = file('/etc/puppet/manifests/site.pp')
-    list_nodes = {}
-    for line in cobbler_file_definition:
-        if 'cobbler::node' in line:
-            host_name = ', '.join(line.split('"')[1::2])
-	    for line in cobbler_file_definition:
-	        if 'node_type' in line:
-		    node_type = ', '.join(line.split('"')[1::2])
-		    list_nodes['%s' %node_type] = host_name
-		    break
-    return list_nodes
-
-if __name__ == '__main__':
-    sys.exit(not main())
-
+cobbler_file_definition = file('/etc/puppet/manifests/site.pp')
+for line in cobbler_file_definition:
+	if not line.startswith("#"):
+		if 'cobbler_node' in line:
+			if 'node_type' in line:
+				if not line.startswith("define"):
+					host_name, node_type, mac_address, ip_address, power_address = line.split('"')[1::2]
+					host_file_nagios = ("%s_nagios2.cfg" % host_name)
+					os.popen("cp /etc/nagios3/conf.d/%s_template.def /etc/nagios3/conf.d/%s" %(node_type, host_file_nagios))
+					os.popen("perl -p -i -e \"s/localhost/" + host_name + "/g\" /etc/nagios3/conf.d/%s" %host_file_nagios)
