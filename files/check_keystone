@@ -85,9 +85,11 @@ for service in services:
     if not any([ "publicURL" in endpoint.keys() for endpoint in endpoints[service] ]):
         msgs.append("`%s' service has no publicURL" % service)
 
+    print "Service %s endpoint is %s" % (service, endpoint)
+
 if msgs:
     print ", ".join(msgs)
     sys.exit(STATE_WARNING)
 
-print "Got token %s for user %s and tenant %s" % (c.auth_token, c.auth_user_id, c.auth_tenant_id)
+#print "Got token %s for user %s and tenant %s" % (c.auth_token, c.auth_user_id, c.auth_tenant_id)
 sys.exit(STATE_OK)
