@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # CPU and Memory utilization on host by VM for Nagios
 #
 # Author: Rohit Agarwalla <roagarwa@cisco.com>
