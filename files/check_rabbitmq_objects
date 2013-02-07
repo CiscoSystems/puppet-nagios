@@ -27,7 +27,7 @@ my $p = Nagios::Plugin->new(
     blurb => 'This plugin uses the RabbitMQ management to count various objects.',
 );
 
-$p->add_arg(spec => 'host|H=s',
+$p->add_arg(spec => 'hostname|host|H=s',
     help => "Specify the host to connect to",
     required => 1
 );
@@ -36,7 +36,7 @@ $p->add_arg(spec => 'port=i',
     default => 55672
 );
 
-$p->add_arg(spec => 'user|u=s',
+$p->add_arg(spec => 'username|user|u=s',
     help => "Username (default: %s)",
     default => "guest",
 );
@@ -45,6 +45,10 @@ $p->add_arg(spec => 'password|p=s',
     default => "guest"
 );
 
+$p->add_arg(spec => 'ssl|ssl!',
+    help => "Use SSL (default: false)",
+    default => 0
+);
 
 # Parse arguments and process standard ones (e.g. usage, help, version)
 $p->getopts;
@@ -56,7 +60,7 @@ $p->getopts;
 ##############################################################################
 # check stuff.
 
-my $hostname=$p->opts->host;
+my $hostname=$p->opts->hostname;
 my $port=$p->opts->port;
 
 my $ua = LWP::UserAgent->new(env_proxy=>1);
@@ -64,13 +68,13 @@ $ua->agent($PROGNAME.' ');
 $ua->timeout($p->opts->timeout);
 # Different security domains in 2.5 and 2.6
 $ua->credentials("$hostname:$port",
-    "RabbitMQ Management", $p->opts->user, $p->opts->password);
+    "RabbitMQ Management", $p->opts->username, $p->opts->password);
 $ua->credentials("$hostname:$port",
-    "Management: Web UI", $p->opts->user, $p->opts->password);
+    "Management: Web UI", $p->opts->username, $p->opts->password);
 
 my @calls = ("vhost", "exchange", "binding", "queue", "channel");
 for my $call (@calls) {
-    my $url = sprintf("http://%s:%d/api/%ss", $hostname, $port, $call);
+    my $url = sprintf("http%s://%s:%d/api/%ss", ($p->opts->ssl ? "s" : ""), $hostname, $port, $call);
     my ($code, $result) = request($url);
     if ($code != 200) {
         $p->nagios_exit(CRITICAL, "$result : /api/". $call."s");
@@ -156,7 +160,7 @@ Verbose output
 
 Set a timeout for the check in seconds
 
-=item -H | --host
+=item -H | --hostname | --host
 
 The host to connect to
 
@@ -164,7 +168,11 @@ The host to connect to
 
 The port to connect to (default: 55672)
 
-=item --user
+=item --ssl
+
+Use SSL when connecting (default: false)
+
+=item --username | --user
 
 The user to connect as (default: guest)
 
