@@ -18,8 +18,8 @@ define hostgroup {
 define hostgroup {
         hostgroup_name  http-servers
 		alias           HTTP servers
-		members         *
-        }
+		members        <%= scope.lookupvar('controller_hostname') %> 
+}
 
 # A list of your ssh-accessible servers
 define hostgroup {
@@ -28,4 +28,10 @@ define hostgroup {
 		members         *
         }
 
+# A list of OpenStack control nodes
+define hostgroup {
+        hostgroup_name  oscontrol-servers
+		alias           OpenStack Control servers
+		members        <%= scope.lookupvar('controller_hostname') %> 
+}
 

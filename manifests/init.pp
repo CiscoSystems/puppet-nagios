@@ -180,7 +180,7 @@ file { "/etc/nagios3/conf.d/hostgroups_nagios2.cfg":
         owner   => "root",
         group   => "root",
         mode    => 0644,
-        source  => "puppet:///modules/nagios/hostgroups_nagios2.cfg",
+        content => template("nagios/hostgroups_nagios2.erb"),
         require => Package["nagios3"],
     } 
 
