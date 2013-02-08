@@ -11,3 +11,75 @@ define service {
 	notification_interval           0 ; set > 0 if you want to be renotified
 }
 
+#
+# monitor OpenStack glance status -- number and name of images
+define service {
+        host_name                       localhost
+        service_description             Glance
+ 	check_command                   check_nrpe_1arg!check_glance1
+        use                             generic-service
+}
+
+#
+# monitor OpenStack keystone status -- service catalog contents
+define service {
+        host_name                       localhost
+        service_description             Keystone
+ 	check_command                   check_nrpe_1arg!check_keystone
+        use                             generic-service
+}
+
+#
+# monitor OpenStack novaapi status -- running and accessible
+define service {
+        host_name                       localhost
+        service_description             Nova-Api
+ 	check_command                   check_nrpe_1arg!check_novaapi
+        use                             generic-service
+}
+
+#
+# monitor OpenStack RabbitMQ status -- service alive?
+define service {
+        host_name                       localhost
+        service_description             RabbitMQ Alive
+ 	check_command                   check_nrpe_1arg!check_rabbitmq_aliveness
+        use                             generic-service
+}
+
+#
+# monitor OpenStack RabbitMQ status -- object counts
+define service {
+        host_name                       localhost
+        service_description             RabbitMQ Objects
+ 	check_command                   check_nrpe_1arg!check_rabbitmq_objects
+        use                             generic-service
+}
+
+#
+# monitor OpenStack RabbitMQ status -- health summary
+define service {
+        host_name                       localhost
+        service_description             RabbitMQ Overview
+ 	check_command                   check_nrpe_1arg!check_rabbitmq_overview
+        use                             generic-service
+}
+
+#
+# monitor OpenStack RabbitMQ status -- memory stats
+define service {
+        host_name                       localhost
+        service_description             RabbitMQ Process
+ 	check_command                   check_nrpe_1arg!check_rabbitmq_server
+        use                             generic-service
+}
+
+#
+# monitor OpenStack RabbitMQ status -- VM memory stats
+define service {
+        host_name                       localhost
+        service_description             RabbitMQ Memory
+ 	check_command                   check_nrpe_1arg!check_rabbitmq_watermark
+        use                             generic-service
+}
+
