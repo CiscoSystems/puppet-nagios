@@ -56,3 +56,10 @@ define service{
 	check_command                   check_nrpe_1arg!check_load
         }
 
+define service {
+	use				generic-service
+	host_name			localhost
+	service_description		NTP
+	check_command			check_nrpe_1arg!check_ntp_time
+}
+
