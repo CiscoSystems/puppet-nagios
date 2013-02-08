@@ -22,6 +22,10 @@ class nagios {
         #require => Exec["get-all-available-hosts"]
   }
 
+  package { 'nagios-nrpe-plugin':
+	ensure => installed,
+  }
+
   exec { "get-all-available-hosts":
                 command => "python /etc/nagios3/conf.d/nagios_openstack.py",
                 path => "/bin:/usr/bin:/sbin:/usr/sbin",
@@ -100,6 +104,16 @@ file { "/etc/nagios3/conf.d/compute_template.def":
         require => Package["nagios3"],
     }
 
+file { "/etc/nagios3/conf.d/common_template.def":
+        notify  => Service["nagios3"],
+        ensure  => present,
+        owner   => "root",
+        group   => "root",
+        mode    => 0644,
+        source  => "puppet:///modules/nagios/common_template.def",
+        require => Package["nagios3"],
+    }
+
 file { "/etc/nagios3/conf.d/swift_template.def":
         notify  => Service["nagios3"],
         ensure  => present,
@@ -166,7 +180,7 @@ file { "/etc/nagios3/conf.d/hostgroups_nagios2.cfg":
         owner   => "root",
         group   => "root",
         mode    => 0644,
-        source  => "puppet:///modules/nagios/hostgroups_nagios2.cfg",
+        content => template("nagios/hostgroups_nagios2.erb"),
         require => Package["nagios3"],
     } 
 
@@ -180,97 +194,4 @@ file { "/etc/nagios3/conf.d/timeperiods_nagios2.cfg":
         require => Package["nagios3"],
     }
 
-
-file { "/usr/lib/nagios/plugins/check_glance1":
-        notify  => Service["nagios3"],
-        ensure  => present,
-        owner   => "root",
-        group   => "root",
-        mode    => 0755,
-        source  => "puppet:///modules/nagios/check_glance1",
-        require => Package["nagios3"],
-    }
-
-
-file { "/usr/lib/nagios/plugins/check_keystone":
-        notify  => Service["nagios3"],
-        ensure  => present,
-        owner   => "root",
-        group   => "root",
-        mode    => 0755,
-        source  => "puppet:///modules/nagios/check_keystone",
-        require => Package["nagios3"],
-    }
-
-file { "/usr/lib/nagios/plugins/check_novaapi":
-        notify  => Service["nagios3"],
-        ensure  => present,
-        owner   => "root",
-        group   => "root",
-        mode    => 0755,
-        source  => "puppet:///modules/nagios/check_novaapi",
-        require => Package["nagios3"],
-    }
-
-file { "/usr/lib/nagios/plugins/check_rabbitmq_aliveness":
-        notify  => Service["nagios3"],
-        ensure  => present,
-        owner   => "root",
-        group   => "root",
-        mode    => 0755,
-        source  => "puppet:///modules/nagios/check_rabbitmq_aliveness",
-        require => Package["nagios3"],
-    }
-
-file { "/usr/lib/nagios/plugins/check_rabbitmq_objects":
-        notify  => Service["nagios3"],
-        ensure  => present,
-        owner   => "root",
-        group   => "root",
-        mode    => 0755,
-        source  => "puppet:///modules/nagios/check_rabbitmq_objects",
-        require => Package["nagios3"],
-    }
-
-file { "/usr/lib/nagios/plugins/check_rabbitmq_overview":
-        notify  => Service["nagios3"],
-        ensure  => present,
-        owner   => "root",
-        group   => "root",
-        mode    => 0755,
-        source  => "puppet:///modules/nagios/check_rabbitmq_overview",
-        require => Package["nagios3"],
-    }
-
-file { "/usr/lib/nagios/plugins/check_rabbitmq_server":
-        notify  => Service["nagios3"],
-        ensure  => present,
-        owner   => "root",
-        group   => "root",
-        mode    => 0755,
-        source  => "puppet:///modules/nagios/check_rabbitmq_server",
-        require => Package["nagios3"],
-    }
-
-file { "/usr/lib/nagios/plugins/check_rabbitmq_queue":
-        notify  => Service["nagios3"],
-        ensure  => present,
-        owner   => "root",
-        group   => "root",
-        mode    => 0755,
-        source  => "puppet:///modules/nagios/check_rabbitmq_queue",
-        require => Package["nagios3"],
-    }
-
-file { "/usr/lib/nagios/plugins/check_vm":
-        notify  => Service["nagios3"],
-        ensure  => present,
-        owner   => "root",
-        group   => "root",
-        mode    => 0755,
-        source  => "puppet:///modules/nagios/check_vm",
-        require => Package["nagios3"],
-    }
-
 }
-

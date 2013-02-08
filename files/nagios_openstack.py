@@ -34,5 +34,6 @@ for line in cobbler_file_definition:
 				if not line.startswith("define"):
 					host_name, node_type, mac_address, ip_address, power_address = line.split('"')[1::2]
 					host_file_nagios = ("%s_nagios2.cfg" % host_name)
-					os.popen("cp /etc/nagios3/conf.d/%s_template.def /etc/nagios3/conf.d/%s" %(node_type, host_file_nagios))
+					os.popen("rm /etc/nagios3/conf.d/%s" % host_file_nagios)
+					os.popen("cat /etc/nagios3/conf.d/common_template.def /etc/nagios3/conf.d/%s_template.def >> /etc/nagios3/conf.d/%s" %(node_type, host_file_nagios))
 					os.popen("perl -p -i -e \"s/localhost/" + host_name + "/g\" /etc/nagios3/conf.d/%s" %host_file_nagios)
