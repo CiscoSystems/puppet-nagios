@@ -22,6 +22,10 @@ class nagios {
         #require => Exec["get-all-available-hosts"]
   }
 
+  package { 'nagios-nrpe-plugin':
+	ensure => installed,
+  }
+
   exec { "get-all-available-hosts":
                 command => "python /etc/nagios3/conf.d/nagios_openstack.py",
                 path => "/bin:/usr/bin:/sbin:/usr/sbin",
@@ -97,6 +101,16 @@ file { "/etc/nagios3/conf.d/compute_template.def":
         group   => "root",
         mode    => 0644,
         source  => "puppet:///modules/nagios/compute_template.def",
+        require => Package["nagios3"],
+    }
+
+file { "/etc/nagios3/conf.d/common_template.def":
+        notify  => Service["nagios3"],
+        ensure  => present,
+        owner   => "root",
+        group   => "root",
+        mode    => 0644,
+        source  => "puppet:///modules/nagios/common_template.def",
         require => Package["nagios3"],
     }
 
@@ -273,4 +287,3 @@ file { "/usr/lib/nagios/plugins/check_vm":
     }
 
 }
-
